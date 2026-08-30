@@ -57,9 +57,30 @@ git push -u origin main
 Edit [`words.js`](words.js). It's grouped by category; add as many entries as you
 like. Multi-word entries work — every significant part is blocked in chat.
 
+## Reconnecting
+
+Brief drops are handled. If a player's connection blips (wifi, phone locking, tab
+backgrounded), the round **pauses** and both players see a "waiting to reconnect"
+overlay. The client auto-reconnects and the game resumes with the clock where it
+left off. If the player doesn't come back within ~45 seconds (`GRACE_MS`), the
+game is abandoned and both return to the lobby.
+
+Refreshing the page is fine too — the tab keeps its identity for the session and
+rejoins the game in progress.
+
+## Config (env vars)
+
+| Var | Default | Meaning |
+|-----|---------|---------|
+| `PORT` | `3000` | HTTP port (Render sets this) |
+| `ROUND_SECONDS` | `120` | Length of each round |
+| `CONTINUE_TIMEOUT_MS` | `5000` | Auto-continue delay on the review screen |
+| `START_SPLASH_MS` | `2500` | "Round X" splash duration |
+| `GRACE_MS` | `45000` | Reconnect window before a game is abandoned |
+
 ## Notes / limits
 
-- State is in memory. A server restart (Render redeploys, free-tier sleep) drops
-  any game in progress — just re-queue.
-- Refreshing the page mid-game leaves the match. Don't refresh.
+- State is in memory. A full server restart (Render redeploy, free-tier sleep
+  after 15 min idle) drops any game in progress — just re-queue.
+- Closing the tab entirely (not just refreshing) ends your session.
 - One game = one pair. Extra players wait in the queue until someone is free.
