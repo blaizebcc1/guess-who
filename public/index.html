@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="theme-color" content="#0f1226" />
+  <title>Guess Who</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%95%B5%EF%B8%8F%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <div id="app">
+
+    <!-- HOME -->
+    <section id="screen-home" class="screen active">
+      <div class="card home-card">
+        <h1 class="logo">Guess&nbsp;Who</h1>
+        <p class="tagline">Explain the word. Don't say the word. 2 minutes on the clock.</p>
+
+        <label class="field-label" for="name">Your name</label>
+        <input id="name" type="text" maxlength="20" placeholder="e.g. Marcus" autocomplete="off" />
+
+        <button id="queueBtn" class="btn btn-primary btn-block">Queue for a game</button>
+
+        <div id="queueStatus" class="queue-status hidden">
+          <div class="spinner"></div>
+          <span>Waiting for another player…</span>
+          <button id="cancelQueueBtn" class="btn btn-ghost btn-sm">Cancel</button>
+        </div>
+
+        <details class="rules">
+          <summary>How to play</summary>
+          <ul>
+            <li>Two players are paired. One <b>guesser</b>, one <b>explainer</b> (picked at random).</li>
+            <li>The explainer sees a secret word and describes it — over voice call and/or the chat.</li>
+            <li>The chat blocks any message that contains the word or a part of it.</li>
+            <li>Guesser hits <b>Got it</b> for a point, or <b>Pass</b> to skip (counts as a miss).</li>
+            <li>When the 2:00 timer ends, the word on screen is a miss. Then you review and swap roles.</li>
+            <li>Higher score across the two rounds wins.</li>
+          </ul>
+        </details>
+      </div>
+      <footer class="foot">Best with a voice call open alongside.</footer>
+    </section>
+
+    <!-- SPLASH between rounds -->
+    <section id="screen-splash" class="screen">
+      <div class="splash-inner">
+        <div class="splash-round" id="splashRound">Round 1</div>
+        <div class="splash-name" id="splashName">—</div>
+        <div class="splash-sub" id="splashSub">is guessing</div>
+      </div>
+    </section>
+
+    <!-- GAME -->
+    <section id="screen-game" class="screen">
+      <header class="game-bar">
+        <div class="gb-item">
+          <span class="gb-label">Round</span>
+          <span id="roundTag" class="gb-value">1 / 2</span>
+        </div>
+        <div class="gb-item gb-timer">
+          <span class="gb-label">Time</span>
+          <span id="timer" class="gb-value">2:00</span>
+        </div>
+        <div class="gb-item">
+          <span class="gb-label">Score</span>
+          <span id="score" class="gb-value">0</span>
+        </div>
+      </header>
+
+      <div id="roleBanner" class="role-banner">—</div>
+
+      <!-- Explainer view -->
+      <div id="explainerView" class="hidden">
+        <div class="word-card">
+          <div class="word-category" id="wordCategory">Category</div>
+          <div class="word-main" id="wordMain">—</div>
+          <div class="word-hint">Describe this. Don't say it (or any part of it).</div>
+        </div>
+      </div>
+
+      <!-- Guesser view -->
+      <div id="guesserView" class="hidden">
+        <div class="guess-hint">Listen / read the clues and shout your guess. When you get it:</div>
+        <div class="guess-buttons">
+          <button id="gotitBtn" class="btn btn-correct">✓ Got it</button>
+          <button id="passBtn" class="btn btn-pass">↦ Pass</button>
+        </div>
+      </div>
+
+      <div class="chat">
+        <div id="chatLog" class="chat-log"></div>
+        <form id="chatForm" class="chat-form" autocomplete="off">
+          <input id="chatInput" type="text" maxlength="200" placeholder="Type a clue / guess…" />
+          <button type="submit" class="btn btn-send">Send</button>
+        </form>
+        <div id="chatWarn" class="chat-warn hidden"></div>
+      </div>
+
+      <button id="leaveGameBtn" class="btn btn-ghost btn-sm leave-btn">Leave game</button>
+    </section>
+
+    <!-- REVIEW -->
+    <section id="screen-review" class="screen">
+      <div class="card review-card">
+        <h2>Round <span id="reviewRound">1</span> review</h2>
+        <p class="review-sub"><span id="reviewGuesser">—</span> was guessing</p>
+        <div class="review-score">
+          <span id="reviewScore">0</span>
+          <small>correct</small>
+        </div>
+        <ul id="reviewList" class="review-list"></ul>
+        <button id="continueBtn" class="btn btn-primary btn-block">Continue</button>
+        <div class="continue-meta">
+          <span id="continueVotes">0 / 2 ready</span>
+          <span id="continueAuto"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section id="screen-final" class="screen">
+      <div class="card final-card">
+        <div class="trophy">🏆</div>
+        <h2 id="finalWinner">—</h2>
+        <div class="final-scores">
+          <div class="fs-col">
+            <div class="fs-name" id="finalName1">—</div>
+            <div class="fs-score" id="finalScore1">0</div>
+            <div class="fs-tag">Round 1</div>
+          </div>
+          <div class="fs-vs">vs</div>
+          <div class="fs-col">
+            <div class="fs-name" id="finalName2">—</div>
+            <div class="fs-score" id="finalScore2">0</div>
+            <div class="fs-tag">Round 2</div>
+          </div>
+        </div>
+        <button id="playAgainBtn" class="btn btn-primary btn-block">Play again</button>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

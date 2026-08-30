@@ -1,0 +1,16 @@
+{
+  "name": "guess-who",
+  "version": "1.0.0",
+  "description": "Real-time 2-player word-explaining party game (Taboo style) with matchmaking, filtered chat and role-swapping rounds.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
